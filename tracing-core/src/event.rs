@@ -22,14 +22,14 @@ use crate::{field, Metadata};
 #[derive(Debug)]
 pub struct Event<'a> {
     fields: &'a field::ValueSet<'a>,
-    metadata: &'static Metadata<'static>,
+    metadata: &'a Metadata<'static>,
     parent: Parent,
 }
 
 impl<'a> Event<'a> {
     /// Constructs a new `Event` with the specified metadata and set of values,
     /// and observes it with the current subscriber.
-    pub fn dispatch(metadata: &'static Metadata<'static>, fields: &'a field::ValueSet<'_>) {
+    pub fn dispatch(metadata: &'a Metadata<'static>, fields: &'a field::ValueSet<'_>) {
         let event = Event::new(metadata, fields);
         crate::dispatcher::get_default(|current| {
             current.event(&event);
@@ -39,7 +39,7 @@ impl<'a> Event<'a> {
     /// Returns a new `Event` in the current span, with the specified metadata
     /// and set of values.
     #[inline]
-    pub fn new(metadata: &'static Metadata<'static>, fields: &'a field::ValueSet<'a>) -> Self {
+    pub fn new(metadata: &'a Metadata<'static>, fields: &'a field::ValueSet<'a>) -> Self {
         Event {
             fields,
             metadata,
@@ -95,7 +95,7 @@ impl<'a> Event<'a> {
     /// Returns [metadata] describing this `Event`.
     ///
     /// [metadata]: super::Metadata
-    pub fn metadata(&self) -> &'static Metadata<'static> {
+    pub fn metadata(&self) -> &'a Metadata<'static> {
         self.metadata
     }
 
